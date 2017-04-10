@@ -23,13 +23,20 @@ public class Client {
 			getConfig();
 			@SuppressWarnings("resource")
 			Socket s = new Socket(ip, port);
-			ObjectInputStream in = new ObjectInputStream(s.getInputStream());
-			ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
-			Object msg = in.readObject();
+			DataInputStream in = new DataInputStream(s.getInputStream());
+			DataOutputStream out = new DataOutputStream(s.getOutputStream());
+			BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
+            String line = null;
+			while (line!="exit") {
+				line = keyboard.readLine();
+				out.writeUTF(line);
+				out.flush();
+				line = in.readUTF();
+				System.out.println(line);
+			}
 			// TODO через класс Message обработать msg, внутри сотворить
 			// махинации, вернуть новый msg
-			out.writeObject(msg);
-		} catch (IOException | ClassNotFoundException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
