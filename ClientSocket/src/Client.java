@@ -2,6 +2,30 @@ import java.io.*;
 import java.net.*;
 import java.util.Properties;
 
+class StreamReader extends Thread {
+	DataOutputStream dis = null;
+
+	public StreamReader(DataOutputStream dis) {
+		this.dis = dis;
+	}
+
+	@Override
+	public void run() {
+		String line = null;
+		BufferedReader keyboard = new BufferedReader(new InputStreamReader(
+				System.in));
+		while (line != "exit") {
+			try {
+				line = keyboard.readLine();
+				dis.writeUTF(line);
+				dis.flush();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}
+
 public class Client {
 	private static int port;
 	private static InetAddress ip;
@@ -25,14 +49,10 @@ public class Client {
 			Socket s = new Socket(ip, port);
 			DataInputStream in = new DataInputStream(s.getInputStream());
 			DataOutputStream out = new DataOutputStream(s.getOutputStream());
-			BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
-            String line = null;
-			while (line!="exit") {
-				line = keyboard.readLine();
-				out.writeUTF(line);
-				out.flush();
-				line = in.readUTF();
-				System.out.println(line);
+			StreamReader sr = new StreamReader(out);
+			sr.start();
+			while (true) {
+				System.out.println(in.readUTF());
 			}
 			// TODO через класс Message обработать msg, внутри сотворить
 			// махинации, вернуть новый msg
