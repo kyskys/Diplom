@@ -3,10 +3,10 @@ import java.net.*;
 import java.util.Properties;
 
 class StreamReader extends Thread {
-	DataOutputStream dis = null;
+	DataOutputStream dos = null;
 
 	public StreamReader(DataOutputStream dis) {
-		this.dis = dis;
+		this.dos = dis;
 	}
 
 	@Override
@@ -17,8 +17,8 @@ class StreamReader extends Thread {
 		while (line != "exit") {
 			try {
 				line = keyboard.readLine();
-				dis.writeUTF(line);
-				dis.flush();
+				dos.writeUTF(line);
+				dos.flush();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
